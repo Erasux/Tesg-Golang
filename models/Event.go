@@ -3,25 +3,27 @@ package models
 import (
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson/primitive" //Importación de MongoDB para el ID
 )
 
-type EventStatus string // Define un tipo para el estado
+// Tipo de estado de evento
+type EventStatus string
 
 const (
 	StatusPending  EventStatus = "Pendiente por revisar"
 	StatusReviewed EventStatus = "Revisado"
 )
 
-// Opcional: Para la clasificación
+// Tipo de estado de gestión
 type ManagementStatus string
 
 const (
 	ManagementRequired    ManagementStatus = "Requiere gestión"
 	ManagementNotRequired ManagementStatus = "Sin gestión"
-	ManagementUndefined   ManagementStatus = "" // Estado inicial o si no está revisado
+	ManagementUndefined   ManagementStatus = "" //Estado inicial por defecto
 )
 
+// Estructura de evento
 type Event struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"` // MongoDB usa _id
 	Name        string             `bson:"name" json:"name" binding:"required"`
@@ -29,6 +31,6 @@ type Event struct {
 	Description string             `bson:"description" json:"description"`
 	Date        time.Time          `bson:"date" json:"date" binding:"required"`
 	Status      EventStatus        `bson:"status" json:"status"`
-	// Campo para la clasificación (Paso 6)
+
 	ManagementStatus ManagementStatus `bson:"managementStatus,omitempty" json:"managementStatus,omitempty"`
 }
