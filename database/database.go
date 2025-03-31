@@ -16,7 +16,6 @@ import (
 var client *mongo.Client
 var database *mongo.Database
 
-// Obtener los datos del .Env
 func getDotEnv(key string) string {
 	err := godotenv.Load()
 	if err != nil {
@@ -138,4 +137,9 @@ func UpdateEvent(event models.Event) (*mongo.UpdateResult, error) {
 func DeleteEvent(id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	collection := database.Collection("events")
 	return collection.DeleteOne(context.Background(), bson.M{"_id": id})
+}
+
+// GetClient retorna el cliente de MongoDB para pruebas
+func GetClient() *mongo.Client {
+	return client
 }
