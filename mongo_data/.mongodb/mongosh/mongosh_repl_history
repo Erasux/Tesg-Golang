@@ -1,0 +1,14 @@
+exit
+db.events.show
+show events
+db.events.deleteMany({})
+show collections
+use eventos
+show dbs
+exit
+show collections
+cls
+clear
+show dbs;
+show dbs
+show databases
