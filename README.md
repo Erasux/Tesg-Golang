@@ -1,15 +1,34 @@
 # Tesg-Golang
-## Requisitos Previos
 
-- Docker
-- Docker Compose
+API REST para la gestión de eventos desarrollada en Go. Esta aplicación permite crear, leer, actualizar y eliminar eventos, además de proporcionar funcionalidades adicionales para la gestión de eventos.
+
+## Descripción del Proyecto
+
+Este proyecto es una API REST que proporciona endpoints para:
+- Crear eventos
+- Obtener lista de eventos
+- Obtener un evento específico
+- Actualizar eventos
+- Eliminar eventos
+- Verificar estado de eventos
+
+La aplicación está construida con:
+- Go 1.24.1
+- Gin (Framework web)
+- MongoDB (Base de datos)
+- Swagger (Documentación API)
+
+## Requisitos
+
+- Docker y Docker Compose
+- Go 1.24.1 o superior (para desarrollo local)
 
 ## Estructura del Proyecto
 
 ```
 .
 ├── database/     # Configuración de la base de datos
-├── docs/         # Documentación
+├── docs/         # Documentación Swagger
 ├── handlers/     # Manejadores de la API
 ├── models/       # Modelos de datos
 ├── utils/        # Utilidades
@@ -28,9 +47,9 @@ MONGO_INITDB_ROOT_PASSWORD=tu_contraseña
 MONGO_URI=mongodb://tu_usuario:tu_contraseña@mongo:27017
 ```
 
-## Ejecución
+## Construcción y Ejecución
 
-Para ejecutar el proyecto:
+Para construir y ejecutar el proyecto:
 
 ```bash
 docker-compose up --build
@@ -42,12 +61,26 @@ Esto iniciará:
 - La aplicación Go en el puerto 8080
 - MongoDB en el puerto 27017
 
-## Detalles Técnicos
+## Acceso a la API
 
-- La aplicación está construida con Go 1.24.1
-- Utiliza MongoDB como base de datos
-- La API está expuesta en el puerto 8080
-- Los datos de MongoDB se persisten en el directorio `mongo_data`
+La API está disponible en `http://localhost:8080` con los siguientes endpoints:
+
+### Endpoints Disponibles
+
+- `POST /events` - Crear un nuevo evento
+- `GET /events` - Obtener todos los eventos
+- `GET /events/:id` - Obtener un evento específico
+- `PUT /events/:id` - Actualizar un evento
+- `DELETE /events/:id` - Eliminar un evento
+- `GET /events/check` - Verificar estado de eventos
+
+## Documentación Swagger
+
+La documentación interactiva de la API está disponible en:
+```
+http://localhost:8080/swagger/index.html
+```
+
 
 ## Detener la Aplicación
 
