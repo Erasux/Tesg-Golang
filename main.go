@@ -1,16 +1,31 @@
 package main
 
 import (
+	"SamirGG/Tesg-Golang/database"
+	"SamirGG/Tesg-Golang/handlers"
+	"log"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// Conectar a la base de datos
+	if err := database.ConnectToDatabase(); err != nil {
+		log.Fatal("Error al conectar con la base de datos:", err)
+	}
+	defer database.DisconnectFromDatabase()
+
 	router := gin.Default()
 
-	router.POST("/events")
-	router.GET("/events")
-	router.GET("/events/:id")
-	router.PUT("/events/:id")
-	router.DELETE("/events/:id")
-	router.Run(":8080")
+	// Rutas de eventos
+	router.POST("/events", handlers.CreateEvent)
+	router.GET("/events", handlers.FindEvents)
+	router.GET("/events/:id", handlers.FindEventById)
+	router.PUT("/events/:id", handlers.UpdateEvent)
+	router.DELETE("/events/:id", handlers.DeleteEvent)
+
+	// Iniciar el servidor
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal("Error al iniciar el servidor:", err)
+	}
 }
