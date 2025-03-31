@@ -16,24 +16,75 @@ import (
 // Output: evento creado
 func CreateEvent(c *gin.Context) {
 	var event models.Event
-	if err := c.ShouldBindJSON(&event); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var err error
+
+	// Obtener datos del formulario
+	name := c.PostForm("name")
+	eventType := c.PostForm("eventType")
+	description := c.PostForm("description")
+	dateStr := c.PostForm("date")
+
+	// Validar campos requeridos
+	if name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "El campo 'name' es requerido",
+			"field": "name",
+		})
 		return
 	}
 
-	// Formatear la fecha para que solo tenga mes, día y año
-	event.Date = time.Date(event.Date.Year(), event.Date.Month(), event.Date.Day(), 0, 0, 0, 0, time.UTC)
-	event.Status = models.StatusPending
-	event.ManagementStatus = models.ManagementUndefined
+	if eventType == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "El campo 'eventType' es requerido",
+			"field": "eventType",
+		})
+		return
+	}
 
+	if dateStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "El campo 'date' es requerido",
+			"field": "date",
+		})
+		return
+	}
+
+	// Parsear la fecha
+	event.Date, err = time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Formato de fecha inválido. Use el formato YYYY-MM-DD",
+			"field": "date",
+			"value": dateStr,
+		})
+		return
+	}
+
+	// Construir el evento
+	event = models.Event{
+		Name:             name,
+		EventType:        eventType,
+		Description:      description,
+		Date:             time.Date(event.Date.Year(), event.Date.Month(), event.Date.Day(), 0, 0, 0, 0, time.UTC),
+		Status:           models.StatusPending,
+		ManagementStatus: models.ManagementUndefined,
+	}
+
+	// Insertar en la base de datos
 	result, err := database.InsertEvent(event)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Error al insertar el evento en la base de datos",
+			"details": err.Error(),
+		})
 		return
 	}
 
 	event.ID = result.InsertedID.(primitive.ObjectID)
-	c.JSON(http.StatusCreated, event)
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Evento creado exitosamente",
+		"event":   event,
+	})
 }
 
 // Buscar eventos
