@@ -81,6 +81,51 @@ La documentación interactiva de la API está disponible en:
 http://localhost:8080/swagger/index.html
 ```
 
+## Ejemplos de Uso
+
+### Crear un Evento
+```bash
+curl -X POST http://localhost:8080/events \
+-H "Content-Type: application/json" \
+-d '{
+    "title": "Conferencia de Go",
+    "description": "Conferencia sobre desarrollo en Go",
+    "date": "2024-04-01T10:00:00Z",
+    "location": "Sala Principal"
+}'
+```
+
+### Obtener Todos los Eventos
+```bash
+curl http://localhost:8080/events
+```
+
+### Obtener un Evento Específico
+```bash
+curl http://localhost:8080/events/ID_DEL_EVENTO
+```
+
+### Actualizar un Evento
+```bash
+curl -X PUT http://localhost:8080/events/ID_DEL_EVENTO \
+-H "Content-Type: application/json" \
+-d '{
+    "title": "Conferencia de Go Actualizada",
+    "description": "Nueva descripción",
+    "date": "2024-04-02T10:00:00Z",
+    "location": "Nueva Sala"
+}'
+```
+
+### Eliminar un Evento
+```bash
+curl -X DELETE http://localhost:8080/events/ID_DEL_EVENTO
+```
+
+### Verificar Estado de Eventos
+```bash
+curl http://localhost:8080/events/check
+```
 
 ## Detener la Aplicación
 
