@@ -10,7 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Obtener los datos del .Evn
+// Obtener los datos del .env
+// Input: clave del .env
+// Output: valor de la clave
 func getDotEnv(key string) string {
 	err := godotenv.Load()
 	if err != nil {
