@@ -4,6 +4,7 @@ import (
 	"SamirGG/Tesg-Golang/database"
 	"SamirGG/Tesg-Golang/models"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,6 +21,8 @@ func CreateEvent(c *gin.Context) {
 		return
 	}
 
+	// Formatear la fecha para que solo tenga mes, día y año
+	event.Date = time.Date(event.Date.Year(), event.Date.Month(), event.Date.Day(), 0, 0, 0, 0, time.UTC)
 	event.Status = models.StatusPending
 	event.ManagementStatus = models.ManagementUndefined
 

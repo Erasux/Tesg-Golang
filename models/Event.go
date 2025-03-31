@@ -29,7 +29,7 @@ type Event struct {
 	Name        string             `bson:"name" json:"name" binding:"required"`
 	EventType   string             `bson:"eventType" json:"eventType" binding:"required"`
 	Description string             `bson:"description" json:"description"`
-	Date        time.Time          `bson:"date" json:"date" binding:"required"`
+	Date        time.Time          `bson:"date" json:"date" binding:"required" time_format:"2006-01-02"`
 	Status      EventStatus        `bson:"status" json:"status"`
 
 	ManagementStatus ManagementStatus `bson:"managementStatus,omitempty" json:"managementStatus,omitempty"`
