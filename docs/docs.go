@@ -9,22 +9,303 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/events": {
+            "get": {
+                "description": "Obtener todos los eventos existentes",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obtener todos los eventos",
+                "responses": {
+                    "200": {
+                        "description": "Lista de eventos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Event"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crear un nuevo evento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Crear un evento",
+                "parameters": [
+                    {
+                        "description": "Evento a crear",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Event"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Evento creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/models.Event"
+                        }
+                    },
+                    "400": {
+                        "description": "Error en la solicitud",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/check": {
+            "post": {
+                "description": "Revisar si hay eventos que necesiten actualización de gestión en la base de datos",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Revisar si hay eventos que necesiten actualización de gestión",
+                "responses": {
+                    "200": {
+                        "description": "Eventos actualizados exitosamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{id}": {
+            "get": {
+                "description": "Obtener un evento específico por su ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obtener evento por ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del evento",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/models.Event"
+                        }
+                    },
+                    "400": {
+                        "description": "Error en la solicitud",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Evento no encontrado",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Actualizar un evento existente",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Actualizar un evento",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del evento",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Evento actualizado",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Event"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento actualizado exitosamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Error en la solicitud",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Evento no encontrado",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Eliminar un evento existente",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Eliminar un evento",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del evento",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento eliminado exitosamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Error en la solicitud",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Evento no encontrado",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Event": {
+            "type": "object",
+            "required": [
+                "date",
+                "eventType",
+                "name"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "eventType": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "MongoDB usa _id",
+                    "type": "string"
+                },
+                "managementStatus": {
+                    "$ref": "#/definitions/models.ManagementStatus"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.EventStatus"
+                }
+            }
+        },
+        "models.EventStatus": {
+            "type": "string",
+            "enum": [
+                "Pendiente por revisar",
+                "Revisado"
+            ],
+            "x-enum-varnames": [
+                "StatusPending",
+                "StatusReviewed"
+            ]
+        },
+        "models.ManagementStatus": {
+            "type": "string",
+            "enum": [
+                "Requiere gestión",
+                "Sin gestión",
+                ""
+            ],
+            "x-enum-comments": {
+                "ManagementUndefined": "Estado inicial por defecto"
+            },
+            "x-enum-varnames": [
+                "ManagementRequired",
+                "ManagementNotRequired",
+                "ManagementUndefined"
+            ]
+        }
+    },
+    "tags": [
+        {
+            "description": "Operaciones relacionadas con eventos",
+            "name": "events"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/",
+	Schemes:          []string{"http"},
+	Title:            "API de Eventos",
+	Description:      "API para la gestión de eventos",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

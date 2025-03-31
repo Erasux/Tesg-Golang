@@ -1,4 +1,199 @@
+basePath: /
+definitions:
+  models.Event:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      eventType:
+        type: string
+      id:
+        description: MongoDB usa _id
+        type: string
+      managementStatus:
+        $ref: '#/definitions/models.ManagementStatus'
+      name:
+        type: string
+      status:
+        $ref: '#/definitions/models.EventStatus'
+    required:
+    - date
+    - eventType
+    - name
+    type: object
+  models.EventStatus:
+    enum:
+    - Pendiente por revisar
+    - Revisado
+    type: string
+    x-enum-varnames:
+    - StatusPending
+    - StatusReviewed
+  models.ManagementStatus:
+    enum:
+    - Requiere gestión
+    - Sin gestión
+    - ""
+    type: string
+    x-enum-comments:
+      ManagementUndefined: Estado inicial por defecto
+    x-enum-varnames:
+    - ManagementRequired
+    - ManagementNotRequired
+    - ManagementUndefined
+host: localhost:8080
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: support@example.com
+    name: API Support
+  description: API para la gestión de eventos
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: API de Eventos
+  version: "1.0"
+paths:
+  /events:
+    get:
+      description: Obtener todos los eventos existentes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de eventos
+          schema:
+            items:
+              $ref: '#/definitions/models.Event'
+            type: array
+        "500":
+          description: Error interno del servidor
+          schema:
+            type: object
+      summary: Obtener todos los eventos
+    post:
+      consumes:
+      - application/json
+      description: Crear un nuevo evento
+      parameters:
+      - description: Evento a crear
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/models.Event'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Evento creado exitosamente
+          schema:
+            $ref: '#/definitions/models.Event'
+        "400":
+          description: Error en la solicitud
+          schema:
+            type: object
+      summary: Crear un evento
+  /events/{id}:
+    delete:
+      description: Eliminar un evento existente
+      parameters:
+      - description: ID del evento
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Evento eliminado exitosamente
+          schema:
+            type: object
+        "400":
+          description: Error en la solicitud
+          schema:
+            type: object
+        "404":
+          description: Evento no encontrado
+          schema:
+            type: object
+      summary: Eliminar un evento
+    get:
+      description: Obtener un evento específico por su ID
+      parameters:
+      - description: ID del evento
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Evento encontrado
+          schema:
+            $ref: '#/definitions/models.Event'
+        "400":
+          description: Error en la solicitud
+          schema:
+            type: object
+        "404":
+          description: Evento no encontrado
+          schema:
+            type: object
+      summary: Obtener evento por ID
+    put:
+      consumes:
+      - application/json
+      description: Actualizar un evento existente
+      parameters:
+      - description: ID del evento
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Evento actualizado
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/models.Event'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Evento actualizado exitosamente
+          schema:
+            type: object
+        "400":
+          description: Error en la solicitud
+          schema:
+            type: object
+        "404":
+          description: Evento no encontrado
+          schema:
+            type: object
+      summary: Actualizar un evento
+  /events/check:
+    post:
+      description: Revisar si hay eventos que necesiten actualización de gestión en
+        la base de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eventos actualizados exitosamente
+          schema:
+            type: object
+        "500":
+          description: Error interno del servidor
+          schema:
+            type: object
+      summary: Revisar si hay eventos que necesiten actualización de gestión
+schemes:
+- http
 swagger: "2.0"
+tags:
+- description: Operaciones relacionadas con eventos
+  name: events

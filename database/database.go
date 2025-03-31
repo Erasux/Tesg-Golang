@@ -16,6 +16,9 @@ import (
 var client *mongo.Client
 var database *mongo.Database
 
+// Obtener el valor de una variable de entorno
+// Input: clave de la variable de entorno
+// Output: valor de la variable de entorno
 func getDotEnv(key string) string {
 	err := godotenv.Load()
 	if err != nil {

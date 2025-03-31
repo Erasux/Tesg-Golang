@@ -12,9 +12,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Crear un evento
-// Input: evento
-// Output: evento creado
+// @Summary Crear un evento
+// @Description Crear un nuevo evento
+// @Accept  json
+// @Produce  json
+// @Param event body models.Event true "Evento a crear"
+// @Success 201 {object} models.Event "Evento creado exitosamente"
+// @Failure 400 {object} object "Error en la solicitud"
+// @Router /events [post]
 func CreateEvent(c *gin.Context) {
 	var event models.Event
 	var err error
@@ -88,9 +93,12 @@ func CreateEvent(c *gin.Context) {
 	})
 }
 
-// Buscar eventos
-// Input: evento
-// Output: evento encontrado
+// @Summary Obtener todos los eventos
+// @Description Obtener todos los eventos existentes
+// @Produce json
+// @Success 200 {array} models.Event "Lista de eventos"
+// @Failure 500 {object} object "Error interno del servidor"
+// @Router /events [get]
 func FindEvents(c *gin.Context) {
 	events, err := database.FindEvents()
 	if err != nil {
@@ -101,9 +109,14 @@ func FindEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, events)
 }
 
-// Buscar evento por ID
-// Input: evento
-// Output: evento encontrado
+// @Summary Obtener evento por ID
+// @Description Obtener un evento específico por su ID
+// @Produce json
+// @Param id path string true "ID del evento"
+// @Success 200 {object} models.Event "Evento encontrado"
+// @Failure 400 {object} object "Error en la solicitud"
+// @Failure 404 {object} object "Evento no encontrado"
+// @Router /events/{id} [get]
 func FindEventById(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -125,9 +138,16 @@ func FindEventById(c *gin.Context) {
 	c.JSON(http.StatusOK, event)
 }
 
-// Actualizar un evento
-// Input: evento
-// Output: evento actualizado
+// @Summary Actualizar un evento
+// @Description Actualizar un evento existente
+// @Accept json
+// @Produce json
+// @Param id path string true "ID del evento"
+// @Param event body models.Event true "Evento actualizado"
+// @Success 200 {object} object "Evento actualizado exitosamente"
+// @Failure 400 {object} object "Error en la solicitud"
+// @Failure 404 {object} object "Evento no encontrado"
+// @Router /events/{id} [put]
 func UpdateEvent(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -157,9 +177,14 @@ func UpdateEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Evento actualizado exitosamente"})
 }
 
-// Eliminar un evento
-// Input: evento
-// Output: evento eliminado
+// @Summary Eliminar un evento
+// @Description Eliminar un evento existente
+// @Produce json
+// @Param id path string true "ID del evento"
+// @Success 200 {object} object "Evento eliminado exitosamente"
+// @Failure 400 {object} object "Error en la solicitud"
+// @Failure 404 {object} object "Evento no encontrado"
+// @Router /events/{id} [delete]
 func DeleteEvent(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -182,7 +207,12 @@ func DeleteEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Evento eliminado exitosamente"})
 }
 
-// Revisar si hay eventos en la base de datos
+// @Summary Revisar si hay eventos que necesiten actualización de gestión
+// @Description Revisar si hay eventos que necesiten actualización de gestión en la base de datos
+// @Produce json
+// @Success 200 {object} object "Eventos actualizados exitosamente"
+// @Failure 500 {object} object "Error interno del servidor"
+// @Router /events/check [post]
 func CheckEvents(c *gin.Context) {
 	events, err := database.FindEvents()
 	if err != nil {
