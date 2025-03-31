@@ -3,6 +3,7 @@ package main
 import (
 	"SamirGG/Tesg-Golang/database"
 	"SamirGG/Tesg-Golang/handlers"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,7 @@ import (
 
 func main() {
 	// Conectar a la base de datos
+	fmt.Println("Conectando a la base de datos...")
 	if err := database.ConnectToDatabase(); err != nil {
 		log.Fatal("Error al conectar con la base de datos:", err)
 	}
@@ -18,6 +20,7 @@ func main() {
 	router := gin.Default()
 
 	// Rutas de eventos
+
 	router.POST("/events", handlers.CreateEvent)
 	router.GET("/events", handlers.FindEvents)
 	router.GET("/events/:id", handlers.FindEventById)
@@ -28,4 +31,5 @@ func main() {
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal("Error al iniciar el servidor:", err)
 	}
+	fmt.Println("Servidor iniciado en el puerto 8080")
 }
