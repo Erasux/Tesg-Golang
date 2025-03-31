@@ -1,1 +1,10 @@
 .env
+/mongo-data
+/mongo-configdb
+/mongo-log
+/mongo-db
+/mongo-etc
+/mongo-var
+/mongo-run
+/mongo-log
+
