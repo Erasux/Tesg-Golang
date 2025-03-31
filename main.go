@@ -32,6 +32,7 @@ func main() {
 	router.GET("/events/:id", handlers.FindEventById)
 	router.PUT("/events/:id", handlers.UpdateEvent)
 	router.DELETE("/events/:id", handlers.DeleteEvent)
+	router.GET("/events/check", handlers.CheckEvents)
 
 	// Iniciar el servidor
 	if err := router.Run(":8080"); err != nil {

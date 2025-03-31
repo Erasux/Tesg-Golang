@@ -3,6 +3,7 @@ package handlers
 import (
 	"SamirGG/Tesg-Golang/database"
 	"SamirGG/Tesg-Golang/models"
+	"SamirGG/Tesg-Golang/utils"
 	"net/http"
 	"time"
 
@@ -179,4 +180,45 @@ func DeleteEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Evento eliminado exitosamente"})
+}
+
+// Revisar si hay eventos en la base de datos
+func CheckEvents(c *gin.Context) {
+	events, err := database.FindEvents()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var updatedEvents []models.Event
+	for _, event := range events {
+		updatedEvent := utils.ChangeManage(event)
+		if updatedEvent.ManagementStatus != event.ManagementStatus {
+			// Actualizar en la base de datos
+			_, err := database.UpdateEvent(updatedEvent)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error":   "Error al actualizar el evento",
+					"eventId": event.ID,
+					"details": err.Error(),
+				})
+				return
+			}
+			updatedEvents = append(updatedEvents, updatedEvent)
+		}
+	}
+
+	if len(updatedEvents) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "No se encontraron eventos que necesiten actualización de gestión",
+			"details": "Los eventos deben estar en estado 'Revisado' para tener un estado de gestión",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":       "Eventos actualizados exitosamente",
+		"details":       "Se actualizó el estado de gestión para eventos revisados",
+		"updatedEvents": updatedEvents,
+	})
 }

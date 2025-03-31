@@ -13,12 +13,19 @@ func checkStatus(event models.Event) models.Event {
 	return event
 }
 
-// Cambiar el estado de gestión de un evento
+// ChangeManage cambia el estado de gestión de un evento basado en su tipo
 func ChangeManage(event models.Event) models.Event {
-	if strings.ToLower(event.EventType) == "tipo de evento 1" || strings.ToLower(event.EventType) == "tipo de evento 2" {
-		event.ManagementStatus = models.ManagementRequired
+	// Solo establecer ManagementStatus si el evento está revisado
+	if event.Status == models.StatusReviewed {
+		eventType := strings.ToLower(event.EventType)
+		if eventType == "tipo de evento 1" || eventType == "tipo de evento 2" {
+			event.ManagementStatus = models.ManagementRequired
+		} else {
+			event.ManagementStatus = models.ManagementNotRequired
+		}
 	} else {
-		event.ManagementStatus = models.ManagementNotRequired
+		// Si no está revisado, no debe tener ManagementStatus
+		event.ManagementStatus = models.ManagementUndefined
 	}
 	return event
 }
