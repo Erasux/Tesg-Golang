@@ -10,6 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Crear un evento
+// Input: evento
+// Output: evento creado
 func CreateEvent(c *gin.Context) {
 	var event models.Event
 	if err := c.ShouldBindJSON(&event); err != nil {
@@ -30,6 +33,9 @@ func CreateEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, event)
 }
 
+// Buscar eventos
+// Input: evento
+// Output: evento encontrado
 func FindEvents(c *gin.Context) {
 	events, err := database.FindEvents()
 	if err != nil {
@@ -40,6 +46,9 @@ func FindEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, events)
 }
 
+// Buscar evento por ID
+// Input: evento
+// Output: evento encontrado
 func FindEventById(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -61,6 +70,9 @@ func FindEventById(c *gin.Context) {
 	c.JSON(http.StatusOK, event)
 }
 
+// Actualizar un evento
+// Input: evento
+// Output: evento actualizado
 func UpdateEvent(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -90,6 +102,9 @@ func UpdateEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Evento actualizado exitosamente"})
 }
 
+// Eliminar un evento
+// Input: evento
+// Output: evento eliminado
 func DeleteEvent(c *gin.Context) {
 	id := c.Param("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
